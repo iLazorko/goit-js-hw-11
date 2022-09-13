@@ -147,8 +147,6 @@ function onFormSubmit(evt) {
   btnFormSubmit.setAttribute('disabled', true);
   const inputValue = evt.currentTarget.elements.searchQuery.value;
   renderMarkupGallery(inputValue);
-
-  btnLoadMore.classList.remove('visually-hidden');
   onHandleInput(inputValue);
 
   // scroll();
@@ -166,6 +164,7 @@ async function renderMarkupGallery(value) {
     const gallery = await fetchPictures(value);
     const { data } = gallery;
     totalPages = Math.ceil(data.totalHits / numberImagesInRequest);
+    btnLoadMore.classList.remove('visually-hidden');
 
     if (pageNumber === 1 && data.hits.length !== 0) {
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
@@ -175,6 +174,7 @@ async function renderMarkupGallery(value) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
+      btnLoadMore.classList.add('visually-hidden');
     }
 
     if (data.hits.length !== 0 && pageNumber >= totalPages) {
