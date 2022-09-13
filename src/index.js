@@ -114,10 +114,11 @@ window.scrollBy({
 
  */
 
-import axios from 'axios';
+// import axios from 'axios';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import fetchPictures from './js/fetchPictures';
 
 const formEl = document.querySelector('#search-form');
 const inputEl = formEl.querySelector('input');
@@ -129,8 +130,8 @@ let pageNumber = 1;
 let totalPages = 0;
 const numberImagesInRequest = 40;
 
-const KEY = '29837319-52dd2bde37e487871542beaa5';
-const BASE_URL = 'https://pixabay.com/api/';
+// const KEY = '29837319-52dd2bde37e487871542beaa5';
+// const BASE_URL = 'https://pixabay.com/api/';
 
 btnLoadMore.classList.add('visually-hidden');
 
@@ -161,7 +162,11 @@ function onHandleInput(value) {
 
 async function renderMarkupGallery(value) {
   try {
-    const gallery = await fetchPictures(value);
+    const gallery = await fetchPictures(
+      value,
+      numberImagesInRequest,
+      pageNumber
+    );
     const { data } = gallery;
     totalPages = Math.ceil(data.totalHits / numberImagesInRequest);
     btnLoadMore.classList.remove('visually-hidden');
@@ -230,13 +235,6 @@ function markupTemplate(pictures) {
     .join('');
   pictureGallery.insertAdjacentHTML('beforeend', markup);
   return pictureGallery;
-}
-
-async function fetchPictures(searchValue) {
-  const urlParams = `?key=${KEY}&per_page=${numberImagesInRequest}&page=${pageNumber}&q=${searchValue}&image_type=photo&orientation=horizontal&safesearch=true&`;
-  const picturesArray = await axios.get(`${BASE_URL}${urlParams}`);
-
-  return picturesArray;
 }
 
 function clearMarkUp() {
